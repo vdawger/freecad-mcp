@@ -16,7 +16,8 @@ def _call(arguments: dict) -> tuple[str, bool]:
     # call_tool returns content (and, on some SDKs, structured output too)
     content = result[0] if isinstance(result, tuple) else result
     if hasattr(content, "content"):
-        return content.content[0].text, bool(content.isError)
+        # mcp 2.x renamed the field to is_error; both serialize as isError.
+        return content.content[0].text, bool(content.model_dump(by_alias=True)["isError"])
     return content[0].text, False
 
 
